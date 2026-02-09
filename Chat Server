@@ -1,0 +1,29 @@
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+public class ChatServer {
+
+    private static final int PORT = 5000;
+    static ArrayList<ClientHandler> clients = new ArrayList<>();
+
+    public static void main(String[] args) {
+        System.out.println("Chat Server started on port " + PORT);
+
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("New client connected");
+
+                ClientHandler clientHandler = new ClientHandler(socket);
+                clients.add(clientHandler);
+
+                new Thread(clientHandler).start();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Server Error: " + e.getMessage());
+        }
+    }
+}
